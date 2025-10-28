@@ -18,7 +18,7 @@ export default function starter(window, document) {
         mainLogger.log("value " + url);
         try {
             const res = await writer.writeUrl(url, 5000);
-
+            mainLogger.log("result " + res);
         } catch (e) {
             mainLogger.error(e);
         }
