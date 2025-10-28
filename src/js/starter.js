@@ -11,25 +11,29 @@ export default function starter(window, document) {
     const writeBtn = document.querySelector(".js-write-nfc");
     const readBtn = document.querySelector(".js-read-nfc");
     const input = document.querySelector("#dataInput");
-    const writer = writeUrlWithTimeout(mainLogger);
-    writeBtn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        const url = input.value;
-        mainLogger.log("value " + url);
-        try {
-            const res = await writer.writeUrl(url, 5000);
-            mainLogger.log("result " + res);
-        } catch (e) {
-            mainLogger.error(e);
-        }
-    });
+    try {
+        const writer = writeUrlWithTimeout(mainLogger);
+        writeBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const url = input.value;
+            mainLogger.log("value " + url);
+            try {
+                const res = await writer.writeUrl(url, 5000);
+                mainLogger.log("result " + res);
+            } catch (e) {
+                mainLogger.error(e);
+            }
+        });
 
-    readBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        try {
-            readNfc(mainLogger, 5000);
-        } catch (e) {
-            mainLogger.error(e);
-        }
-    });
+        readBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            try {
+                readNfc(mainLogger, 5000);
+            } catch (e) {
+                mainLogger.error(e);
+            }
+        });
+    } catch (e) {
+        mainLogger.error(e);
+    }
 }

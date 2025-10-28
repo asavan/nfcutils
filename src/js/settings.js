@@ -1,6 +1,6 @@
 export default {
     wsPort : 8088,
-    logger: "",
+    logger: ".log",
     serverId: "",
     gameChanPrefix: "nfc_",
     logLevel: 2,
