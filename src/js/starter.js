@@ -11,17 +11,16 @@ export default function starter(window, document) {
     const writeBtn = document.querySelector(".js-write-nfc");
     const readBtn = document.querySelector(".js-read-nfc");
     const input = document.querySelector("#dataInput");
-    writeBtn.addEventListener("click", (e)=> {
+    const writer = writeUrlWithTimeout(mainLogger);
+    writeBtn.addEventListener("click", (e) => {
         e.preventDefault();
         const url = input.value;
         mainLogger.log("value " + url);
-        const writer = writeUrlWithTimeout(window, mainLogger);
         writer.writeUrl(url, 5000);
     });
 
     readBtn.addEventListener("click", (e) => {
         e.preventDefault();
-        readNfc(window, mainLogger, 5000);
+        readNfc(mainLogger, 5000);
     });
-
 }

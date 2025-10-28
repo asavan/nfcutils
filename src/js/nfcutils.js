@@ -1,5 +1,7 @@
-export function writeUrlWithTimeout(window, logger) {
-    const ndef = new window.NDEFReader();
+export function writeUrlWithTimeout(logger) {
+    /* eslint-disable no-undef */
+    const ndef = new NDEFReader();
+    /* eslint-enable no-undef */
     ndef.onreading = (event) => {
         logger.log("We read a tag!");
         logger.log(event);
@@ -44,9 +46,11 @@ export function writeUrlWithTimeout(window, logger) {
     };
 }
 
-export function readNfc(window, logger, ms) {
+export function readNfc(logger, ms) {
     const signal = AbortSignal.timeout(ms);
-    const ndef = new window.NDEFReader();
+    /* eslint-disable no-undef */
+    const ndef = new NDEFReader();
+    /* eslint-enable no-undef */
     ndef
         .scan(signal)
         .then(() => {
