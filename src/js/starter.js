@@ -6,7 +6,7 @@ import {writeUrlWithTimeout} from "./nfcutils.js";
 export default function starter(window, document) {
     const changed = parseSettings(window.location.search, settings);
     const mainLogger = loggerFunc(document, settings);
-    mainLogger.log("Choosen mode " + settings.mode, changed);
+    mainLogger.log("Extra options " + JSON.stringify(changed));
 
     const writeBtn = document.querySelector(".js-write-nfc");
     const readBtn = document.querySelector(".js-read-nfc");

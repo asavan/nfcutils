@@ -48,10 +48,16 @@ export function writeUrlWithTimeout(logger) {
         parser(event);
     };
 
-    function write(data, timeout) {
+    ndef.onreadingerror = (event) => {
+        logger.error(
+            "Error! Cannot read data from the NFC tag. Try a different one?",
+            event);
+        logger.error(event);
+    };
+
+    function write(data, signal) {
         ignoreRead = true;
         return new Promise((resolve, reject) => {
-            const signal = AbortSignal.timeout(timeout);
             signal.onabort = () =>
                 reject(new Error("Time is up " + signal.reason));
 
@@ -67,18 +73,16 @@ export function writeUrlWithTimeout(logger) {
     }
 
     const writeUrl = async (url, timeout) => {
-        await ndef.scan();
-        try {
-            const data = {
-                records: [{recordType: "url", data: url}],
-            };
-            // Let's wait for 5 seconds only.
-            await write(data, timeout);
-        } catch (err) {
-            logger.error("Something went wrong", err);
-        } finally {
-            logger.log("We wrote to a tag!");
-        }
+        const signal = AbortSignal.timeout(timeout);
+        await ndef.scan({signal});
+        logger.log("touch tag with phone to write");
+        const data = {
+            records: [{recordType: "url", data: url}],
+        };
+        // Let's wait for 5 seconds only.
+        const written = await write(data, signal);
+        logger.log("We wrote to a tag! " + written);
+        return written;
     };
 
     const read = (timeout) => readNfc(ndef, logger, timeout);
@@ -90,21 +94,12 @@ export function writeUrlWithTimeout(logger) {
     };
 }
 
-export function readNfc(ndef, logger, ms) {
+async function readNfc(ndef, logger, ms) {
     const signal = AbortSignal.timeout(ms);
-    ndef
-        .scan({signal})
-        .then(() => {
-            logger.log("Scan started successfully.");
-            ndef.onreadingerror = (event) => {
-                logger.log(
-                    "Error! Cannot read data from the NFC tag. Try a different one?",
-                    event);
-            };
-            const parser = parseEventWithLogger(logger);
-            ndef.onreading = parser;
-        })
-        .catch((error) => {
-            logger.log(`Error! Scan failed to start: ${error}.`);
-        });
+    try {
+        await ndef.scan({signal});
+        logger.log("touch tag with phone to read");
+    } catch (error) {
+        logger.log(`Error! Scan failed to start: ${error}.`);
+    }
 }
