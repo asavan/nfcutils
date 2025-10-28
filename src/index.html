@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Sos game</title>
+    <meta name="description" content="Sos game">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="theme-color" content="#ffffff">
+    <link id="favicon" rel="icon" href="./images/nfc1.svg" sizes="any" type="image/svg+xml">
+    <!--    <link rel="manifest" href="./app.webmanifest">-->
+
+</head>
+
+<body>
+<section class="menu">
+    <div id="control-panel" class="control-panel minimized">
+        <div class="panel-header">
+            <!--⛶ ⤭ ◱ 🗖 🗖 -->
+            <button id="butInstall" title="install" class="hidden contrl-btn butInstall">↓</button>
+            <button id="resize-btn" title="fullscreen" class="contrl-btn resize-btn">⤱</button>
+            <button id="maximize-btn" class="hidden contrl-btn maximize-btn" title="Maximize Panel">⚙</button>
+            <button class="help-btn contrl-btn circled" title="Rules" popovertarget="myModal"></button>
+            <button class="qr-btn contrl-btn" title="QR">▣</button>
+        </div>
+        <div class="panel-content"></div>
+    </div>
+    <div class="video-barcode"></div>
+</section>
+<section class="lobby">
+    <div class="qrcontainer"></div>
+</section>
+<section class="container content">
+    <div class="form-container1">
+        <label for="dataInput">Enter Data:</label>
+        <input type="text" id="dataInput" name="data" required>
+        <div class="button-group">
+            <button class="form-button read-button js-read-nfc">Read</button>
+            <button class="form-button write-button js-write-nfc">Write</button>
+        </div>
+    </div>
+
+</section>
+
+<div class="log"></div>
+<footer>
+</footer>
+
+</body>
+</html>

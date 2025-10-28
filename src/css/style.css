@@ -1,0 +1,468 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --main-color: #F0F8FF;
+    --player-color: chartreuse;
+    --field-size: 4;
+    --card-width: 50px;
+    --color-green: #5A5;
+    --color-red: #F55;
+    --color-yellow: #FA0;
+    --color-blue: #55F;
+    --color-black: #000;
+    --current-color: aliceblue;
+    --inverted-color: white;
+    --border-color: gray;
+}
+
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+body::backdrop {
+    background-color: white;
+}
+
+.game {
+    flex: 1 0 auto;
+
+    /* padding: 10px; */
+}
+
+footer {
+    flex: 0 0 auto;
+}
+
+.field {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.box {
+    flex: var(--field-size);
+    display: flex;
+    gap: 5px;
+    align-items: stretch;
+}
+
+.buttons {
+    display: flex;
+    flex: 2;
+    gap: 5px;
+    justify-content: center;
+}
+
+.qrcode {
+    width: 300px;
+    display: inline-block;
+}
+
+.qrcode.big {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.install {
+    background-color: var(--main-color);
+    text-align: center;
+    font: bold 24px/100px Tahoma, sans-serif;
+    height: 100px;
+    width: 100%;
+    cursor: pointer;
+    border: 0;
+    padding: 0;
+}
+
+.cell {
+    flex-grow: 1;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+    min-width: 50px;
+    max-width: 100px;
+    border: solid 2px;
+    border-color: var(--border-color);
+    font: bold 24px Tahoma, sans-serif;
+    border-radius: 10px;
+    background-color: var(--main-color);
+    touch-action: none;
+    user-select: none;
+    cursor: pointer;
+}
+
+@media (max-width: 750px) {
+    .cell {
+        min-width: 48px;
+        max-width: calc((100vh - 30px)/var(--field-size) - 2px);
+        max-height: calc((100vh - 30px)/var(--field-size) - 2px);
+    }
+
+    .box {
+        flex-direction: column;
+        flex: 1;
+        gap: 2px;
+    }
+
+    .buttons {
+        flex-direction: column;
+        flex: 1;
+        align-self: center;
+    }
+
+    .absolute {
+        position: absolute;
+    }
+
+    .hidden2 {
+        display: none;
+    }
+}
+
+@media (min-width: 750px) {
+    .game {
+        padding: 5px;
+    }
+}
+
+.red {
+    --border-color: var(--color-red);
+
+    color: var(--color-red);
+}
+
+.blue {
+    --border-color: var(--color-blue);
+
+    color: var(--color-blue);
+}
+
+.green {
+    --border-color: var(--color-green);
+
+    color: var(--color-green);
+}
+
+.yellow {
+    --border-color: var(--color-yellow);
+
+    color: var(--color-yellow);
+}
+
+.black {
+    --border-color: var(--color-black);
+
+    color: var(--color-black);
+}
+
+.cell.last {
+    box-shadow: inset 0 0 0 5px var(--border-color);
+}
+
+.active {
+    color: white;
+    background-color: var(--border-color);
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 70%);
+    transition: opacity 700ms;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.overlay.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup {
+    margin: 70px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 80%;
+    position: relative;
+    transition: all 5s ease-in-out;
+}
+
+.popup h2 {
+    margin-top: 0;
+    color: #333;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+.popup .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    transition: all 400ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+}
+
+.popup .close:hover {
+    color: var(--player-color);
+}
+
+.popup .content {
+    max-height: 30%;
+    overflow: auto;
+}
+
+.disabled, .disabled * {
+    cursor: not-allowed;
+}
+
+.form-container {
+    max-width: 400px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+}
+
+.form-field {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.form-field:hover {
+    background-color: #f8f9fa;
+    color: black;
+}
+
+.form-input {
+    margin-right: 10px;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.form-label {
+    cursor: pointer;
+    user-select: none;
+    flex: 1;
+}
+
+/* Optional: Add visual feedback for changes */
+.form-field.changed {
+    background-color: #e8f5e8;
+    border-left: 3px solid #28a745;
+    padding-left: 10px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+    align-items: center;
+    gap: 3px;
+}
+
+.relative {
+    position: relative;
+}
+
+.control-panel {
+    top: 10px;
+    right: 10px;
+    background-color: #323232;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    font-family: sans-serif;
+    display: flex;
+    z-index: 2;
+    flex-direction: column;
+    min-width: 320px;
+    transition: min-height 0.3s ease, padding 0.3s ease, min-width 0.3s ease;
+    gap: 5px;
+}
+
+.control-panel.minimized {
+    min-width: auto;
+    min-height: auto;
+    gap: 0;
+    display: block !important;
+    margin-left: 0;
+    padding: 5px;
+    outline: none;
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+.contrl-btn {
+    font-family: Cambria, Georgia, serif;
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    overflow: hidden;
+    font-size: 2rem;
+    padding: 0 3px;
+}
+
+.control-panel button:not(:disabled):active {
+    background-color: #7a7a7a;
+    transform: translateY(1px);
+}
+
+.control-panel button:not(:disabled):hover { background-color: #686868; }
+
+/* Стили для формы, созданной функцией createFormBinder */
+
+.formbinder-form {
+    /* Стили для формы в целом */
+}
+
+.formbinder-field-container {
+    margin: 10px 0;
+}
+
+.formbinder-label {
+    display: inline-block;
+    width: 120px;
+}
+
+.formbinder-error {
+    color: red;
+}
+
+
+dialog {
+    border: none;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgb(0 0 0 / 20%);
+}
+
+dialog::backdrop {
+    background-color: rgb(0 0 0 / 50%);
+}
+
+.circled {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
+
+.circled::before {
+    content: "";
+    grid-area: 1 / 1;
+    width: 35px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.circled::after {
+    content: "?";
+    grid-area: 1 / 1;
+}
+
+.hidden { display: none; }
+
+/* Form container styling */
+.form-container1 {
+    background-color: #fff;
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgb(0 0 0 / 10%);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+/* Label styling */
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+/* Input field styling */
+input[type="text"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* Focus state for input */
+input[type="text"]:focus {
+    border-color: #4c51bf;
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(76 81 191 / 20%);
+}
+
+/* Button container for flexible layout */
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* Button styling */
+.form-button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 100%;
+}
+
+/* Specific button colors and hover effects */
+.read-button {
+    background-color: #6366f1;
+    color: #fff;
+}
+
+.read-button:hover {
+    background-color: #4f46e5;
+}
+
+.write-button {
+    background-color: #e2e8f0;
+    color: #4a5568;
+}
+
+.write-button:hover {
+    background-color: #cbd5e1;
+}
+
+/* Add a small press down effect on click */
+.form-button:active {
+    transform: scale(0.98);
+}
