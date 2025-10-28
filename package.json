@@ -26,9 +26,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/asavan/sosgame.git"
+    "url": "git+https://github.com/asavan/nfcutils.git"
   },
-  "homepage": "https://asavan.github.io/sosgame/",
+  "homepage": "https://asavan.github.io/nfcutils/",
   "devDependencies": {
     "netdeps": "github:asavan/net-deps#v0.0.4"
   },
