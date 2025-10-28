@@ -1,3 +1,5 @@
+// https://developer.chrome.com/docs/capabilities/nfc?hl=ru
+
 function readUrlRecord(record, logger) {
     console.assert(record.recordType === "url");
     const textDecoder = new TextDecoder();
@@ -24,7 +26,7 @@ const parseEventWithLogger = (logger) => (event) => {
             readUrlRecord(record, logger);
             break;
         default:
-            // TODO: Handle other records with record data.
+            logger.log("Data " + JSON.stringify(record));
         }
     }
 };
@@ -32,26 +34,34 @@ const parseEventWithLogger = (logger) => (event) => {
 export function writeUrlWithTimeout(logger) {
     /* eslint-disable no-undef */
     const ndef = new NDEFReader();
+    let ignoreRead = false;
+    let counter = 0;
     /* eslint-enable no-undef */
     ndef.onreading = (event) => {
-        logger.log("We read a tag!");
+        if (ignoreRead) {
+            return; // write pending, ignore read.
+        }
+        ++counter;
+        logger.log("We read a tag! " + counter);
+        const parser = parseEventWithLogger(logger);
         logger.log(event);
+        parser(event);
     };
 
-    function write(data, { timeout } = {}) {
+    function write(data, timeout) {
+        ignoreRead = true;
         return new Promise((resolve, reject) => {
-            const controller = new AbortController();
-            controller.signal.onabort = () =>
-                reject(new Error("Time is up, bailing out!"));
-            setTimeout(() => controller.abort(), timeout);
+            const signal = AbortSignal.timeout(timeout);
+            signal.onabort = () =>
+                reject(new Error("Time is up " + signal.reason));
 
             ndef.addEventListener(
                 "reading",
                 (event) => {
                     logger.log("event1", event);
-                    ndef.write(data, { signal: controller.signal }).then(resolve, reject);
+                    ndef.write(data, {signal}).then(resolve, reject).finally(() => (ignoreRead = false));
                 },
-                { once: true },
+                {once: true},
             );
         });
     }
@@ -60,10 +70,10 @@ export function writeUrlWithTimeout(logger) {
         await ndef.scan();
         try {
             const data = {
-                records: [{ recordType: "url", data: url }],
+                records: [{recordType: "url", data: url}],
             };
             // Let's wait for 5 seconds only.
-            await write(data, { timeout: timeout });
+            await write(data, timeout);
         } catch (err) {
             logger.error("Something went wrong", err);
         } finally {
@@ -71,19 +81,19 @@ export function writeUrlWithTimeout(logger) {
         }
     };
 
+    const read = (timeout) => readNfc(ndef, logger, timeout);
+
     return {
+        read,
         write,
         writeUrl
     };
 }
 
-export function readNfc(logger, ms) {
+export function readNfc(ndef, logger, ms) {
     const signal = AbortSignal.timeout(ms);
-    /* eslint-disable no-undef */
-    const ndef = new NDEFReader();
-    /* eslint-enable no-undef */
     ndef
-        .scan(signal)
+        .scan({signal})
         .then(() => {
             logger.log("Scan started successfully.");
             ndef.onreadingerror = (event) => {

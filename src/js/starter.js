@@ -1,6 +1,6 @@
 import {loggerFunc, parseSettings} from "netutils";
 import settings from "./settings.js";
-import {readNfc, writeUrlWithTimeout} from "./nfcutils.js";
+import {writeUrlWithTimeout} from "./nfcutils.js";
 
 
 export default function starter(window, document) {
@@ -33,7 +33,7 @@ export default function starter(window, document) {
         readBtn.addEventListener("click", (e) => {
             e.preventDefault();
             try {
-                readNfc(mainLogger, 5000);
+                writer.read(5000);
             } catch (e) {
                 mainLogger.error(e);
             }
