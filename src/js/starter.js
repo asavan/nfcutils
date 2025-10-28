@@ -10,8 +10,13 @@ export default function starter(window, document) {
 
     const writeBtn = document.querySelector(".js-write-nfc");
     const readBtn = document.querySelector(".js-read-nfc");
+    const cleanBtn = document.querySelector(".js-clean");
+    const logElem = document.querySelector(".log");
     const input = document.querySelector("#dataInput");
     try {
+        cleanBtn.addEventListener("click", () => {
+            logElem.innerHTML = "";
+        });
         const writer = writeUrlWithTimeout(mainLogger);
         writeBtn.addEventListener("click", async (e) => {
             e.preventDefault();

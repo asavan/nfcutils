@@ -1,3 +1,34 @@
+function readUrlRecord(record, logger) {
+    console.assert(record.recordType === "url");
+    const textDecoder = new TextDecoder();
+    logger.log(`URL: ${textDecoder.decode(record.data)}`);
+}
+
+function readTextRecord(record, logger) {
+    console.assert(record.recordType === "text");
+    const textDecoder = new TextDecoder(record.encoding);
+    logger.log(`Text: ${textDecoder.decode(record.data)} (${record.lang})`);
+}
+
+const parseEventWithLogger = (logger) => (event) => {
+    const message = event.message;
+    for (const record of message.records) {
+        logger.log("Record type:  " + record.recordType);
+        logger.log("MIME type:    " + record.mediaType);
+        logger.log("Record id:    " + record.id);
+        switch (record.recordType) {
+        case "text":
+            readTextRecord(record, logger);
+            break;
+        case "url":
+            readUrlRecord(record, logger);
+            break;
+        default:
+            // TODO: Handle other records with record data.
+        }
+    }
+};
+
 export function writeUrlWithTimeout(logger) {
     /* eslint-disable no-undef */
     const ndef = new NDEFReader();
@@ -54,15 +85,14 @@ export function readNfc(logger, ms) {
     ndef
         .scan(signal)
         .then(() => {
-            console.log("Scan started successfully.");
+            logger.log("Scan started successfully.");
             ndef.onreadingerror = (event) => {
                 logger.log(
                     "Error! Cannot read data from the NFC tag. Try a different one?",
                     event);
             };
-            ndef.onreading = (event) => {
-                logger.log("NDEF message read." + event);
-            };
+            const parser = parseEventWithLogger(logger);
+            ndef.onreading = parser;
         })
         .catch((error) => {
             logger.log(`Error! Scan failed to start: ${error}.`);
