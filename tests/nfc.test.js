@@ -3,6 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {bufferToBytes, createWpsPayload2, createWpsPayloadBytes} from "../src/js/nfc_payload.js";
+import ndefWifiSimple from "../src/js/lib/ndef-wifi-simple.js";
 
 /* eslint-disable */
 //parsing according to
@@ -137,8 +138,8 @@ const loadModule = function () {
 /* eslint-enable */
 
 test("nfc simple", () => {
-    const ssidHolel = "MAY BEACH HOTEL T3";
-    const pass = "12345678";
+    const ssidHolel = "MAY BEACH HOTEL T34";
+    const pass = "1234567890";
     const payload = createWpsPayloadBytes(ssidHolel, pass);
     const nfcWifiParser = loadModule();
     const result = nfcWifiParser(payload);
@@ -157,4 +158,21 @@ test("nfc simple 2", () => {
     console.log(result);
     assert.equal(ssidHolel, result.ssid);
     assert.equal(pass, result.preSharedKey);
+});
+
+
+test("nfc simple 3", () => {
+    const ssidHolel = "MAY BEACH HOTEL T3";
+    const pass = "12345678";
+    const payload = ndefWifiSimple.encodePayload({ssid: ssidHolel, networkKey: pass});
+    const nfcWifiParser = loadModule();
+    const result = nfcWifiParser(payload);
+    console.log(result);
+    assert.equal(ssidHolel, result.ssid);
+    assert.equal(pass, result.preSharedKey);
+
+    const decoded = ndefWifiSimple.decodePayload(payload);
+    console.log("Decoded", decoded);
+    assert.equal(ssidHolel, decoded.ssid);
+    assert.equal(pass, decoded.networkKey);
 });

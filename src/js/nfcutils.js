@@ -12,7 +12,7 @@ function readTextRecord(record, logger) {
     logger.log(`Text: ${textDecoder.decode(record.data)} (${record.lang})`);
 }
 
-function arrayBufferToHexString(buffer) {
+export function arrayBufferToHexString(buffer) {
     // Create a Uint8Array view of the ArrayBuffer
     const uint8Array = new Uint8Array(buffer);
 
@@ -25,10 +25,27 @@ function arrayBufferToHexString(buffer) {
     return hexString;
 }
 
+function dataViewToHexString(dataView) {
+    let hexString = '';
+    for (let i = 0; i < dataView.byteLength; i++) {
+        // Get the byte at the current offset
+        const byte = dataView.getUint8(i);
+
+        // Convert the byte to a hexadecimal string
+        // .toString(16) converts to hex
+        // .padStart(2, '0') ensures two digits (e.g., 5 becomes "05")
+        const hexByte = byte.toString(16).padStart(2, '0');
+
+        // Append to the overall hex string
+        hexString += hexByte;
+    }
+    return hexString;
+}
+
 function readMimeRecord(record, logger) {
     console.assert(record.recordType === "mime");
-    logger.log("Data len " + record.data.length);
-    logger.log(arrayBufferToHexString(record.data));
+    logger.log("Data len " + record.data.byteLength);
+    logger.log("Data: " + dataViewToHexString(record.data));
 }
 
 const parseEventWithLogger = (logger) => (event) => {

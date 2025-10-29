@@ -19,6 +19,14 @@ function makeTLV(type, bytes) {
  * @returns {ArrayBuffer} The binary WPS payload as an ArrayBuffer.
  */
 export function createWpsPayloadBytes(ssid, networkKey) {
+    const MAX_SSID_SIZE_BYTES = 32;
+    const MAX_NETWORK_KEY_SIZE_BYTES = 64;
+    if (ssid.length > MAX_SSID_SIZE_BYTES) {
+        throw Error("too long ssid");
+    }
+    if (networkKey.length > MAX_NETWORK_KEY_SIZE_BYTES) {
+        throw Error("too long password");
+    }
     const encoder = new TextEncoder();
 
     // Define TLV tags and types based on the WPS specification
@@ -68,12 +76,14 @@ export function createWpsPayloadBytes(ssid, networkKey) {
         ...authTypeTlv,
         ...encrTypeTlv,
         ...networkKeyTlv,
-        ...macAddressTlv
+        // ...macAddressTlv
     ];
 
     // Create the final payload structure
     const payload = makeTLV(TAG_WPS_CREDENTIAL, credential);
+    console.log("credential len " + credential.length.toString(16));
     console.log("payload len " + payload.length);
+    console.log("ssidBytes len " + ssidBytes.length);
 
     // Return the payload as an ArrayBuffer
     return payload;
