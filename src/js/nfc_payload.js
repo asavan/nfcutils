@@ -81,9 +81,6 @@ export function createWpsPayloadBytes(ssid, networkKey) {
 
     // Create the final payload structure
     const payload = makeTLV(TAG_WPS_CREDENTIAL, credential);
-    console.log("credential len " + credential.length.toString(16));
-    console.log("payload len " + payload.length);
-    console.log("ssidBytes len " + ssidBytes.length);
 
     // Return the payload as an ArrayBuffer
     return payload;

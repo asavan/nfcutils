@@ -143,7 +143,6 @@ test("nfc simple", () => {
     const payload = createWpsPayloadBytes(ssidHolel, pass);
     const nfcWifiParser = loadModule();
     const result = nfcWifiParser(payload);
-    console.log(result);
     assert.equal(ssidHolel, result.ssid);
     assert.equal(pass, result.preSharedKey);
 });
@@ -155,7 +154,6 @@ test("nfc simple 2", () => {
     const payload = bufferToBytes(payloadBuffer);
     const nfcWifiParser = loadModule();
     const result = nfcWifiParser(payload);
-    console.log(result);
     assert.equal(ssidHolel, result.ssid);
     assert.equal(pass, result.preSharedKey);
 });
@@ -167,12 +165,11 @@ test("nfc simple 3", () => {
     const payload = ndefWifiSimple.encodePayload({ssid: ssidHolel, networkKey: pass});
     const nfcWifiParser = loadModule();
     const result = nfcWifiParser(payload);
-    console.log(result);
     assert.equal(ssidHolel, result.ssid);
     assert.equal(pass, result.preSharedKey);
 
     const decoded = ndefWifiSimple.decodePayload(payload);
-    console.log("Decoded", decoded);
     assert.equal(ssidHolel, decoded.ssid);
     assert.equal(pass, decoded.networkKey);
+    assert.deepEqual(ndefWifiSimple.authTypes.WPA2_PSK, decoded.authType);
 });
