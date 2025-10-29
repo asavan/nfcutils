@@ -7,7 +7,7 @@
  * @param {string} networkKey The password for the Wi-Fi network.
  * @returns {ArrayBuffer} The binary WPS payload as an ArrayBuffer.
  */
-export function createWpsPayload(ssid, networkKey) {
+export function createWpsPayloadBytes(ssid, networkKey) {
     const encoder = new TextEncoder();
 
     // Define TLV tags and types based on the WPS specification
@@ -68,5 +68,9 @@ export function createWpsPayload(ssid, networkKey) {
     ];
 
     // Return the payload as an ArrayBuffer
-    return new Uint8Array(payload).buffer;
+    return payload;
+}
+
+export function createWpsPayload(ssid, networkKey) {
+    return new Uint8Array(createWpsPayloadBytes(ssid, networkKey)).buffer;
 }

@@ -23,3 +23,5 @@
 
 // looks useful https://github.com/revtel/react-native-nfc-manager/issues/188
 
+Проверить что тут
+https://cdn.jsdelivr.net/npm/react-native-nfc-manager@2.2.1/index.d.ts

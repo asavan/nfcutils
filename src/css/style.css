@@ -393,7 +393,7 @@ dialog::backdrop {
     border-radius: 10px;
     box-shadow: 0 10px 25px rgb(0 0 0 / 10%);
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
     box-sizing: border-box;
 }
 
