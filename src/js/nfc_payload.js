@@ -76,7 +76,7 @@ export function createWpsPayloadBytes(ssid, networkKey) {
         ...authTypeTlv,
         ...encrTypeTlv,
         ...networkKeyTlv,
-        // ...macAddressTlv
+        ...macAddressTlv
     ];
 
     // Create the final payload structure

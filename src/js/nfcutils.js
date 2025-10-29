@@ -26,7 +26,7 @@ export function arrayBufferToHexString(buffer) {
 }
 
 function dataViewToHexString(dataView) {
-    let hexString = '';
+    let hexString = "";
     for (let i = 0; i < dataView.byteLength; i++) {
         // Get the byte at the current offset
         const byte = dataView.getUint8(i);
@@ -34,7 +34,7 @@ function dataViewToHexString(dataView) {
         // Convert the byte to a hexadecimal string
         // .toString(16) converts to hex
         // .padStart(2, '0') ensures two digits (e.g., 5 becomes "05")
-        const hexByte = byte.toString(16).padStart(2, '0');
+        const hexByte = byte.toString(16).padStart(2, "0");
 
         // Append to the overall hex string
         hexString += hexByte;
