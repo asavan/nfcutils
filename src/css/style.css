@@ -394,7 +394,6 @@ dialog::backdrop {
     box-shadow: 0 10px 25px rgb(0 0 0 / 10%);
     width: 100%;
     max-width: 500px;
-    box-sizing: border-box;
 }
 
 /* Label styling */
@@ -427,6 +426,7 @@ input[type="text"]:focus {
 /* Button container for flexible layout */
 .button-group {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     gap: 1rem;
 }

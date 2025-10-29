@@ -12,6 +12,25 @@ function readTextRecord(record, logger) {
     logger.log(`Text: ${textDecoder.decode(record.data)} (${record.lang})`);
 }
 
+function arrayBufferToHexString(buffer) {
+    // Create a Uint8Array view of the ArrayBuffer
+    const uint8Array = new Uint8Array(buffer);
+
+    // Use Array.from and map to convert each byte to a hex string
+    // padStart(2, '0') ensures each hex value is two digits (e.g., '0A' instead of 'A')
+    const hexString = Array.from(uint8Array)
+        .map(byte => byte.toString(16).padStart(2, "0"))
+        .join("");
+
+    return hexString;
+}
+
+function readMimeRecord(record, logger) {
+    console.assert(record.recordType === "mime");
+    logger.log("Data len " + record.data.length);
+    logger.log(arrayBufferToHexString(record.data));
+}
+
 const parseEventWithLogger = (logger) => (event) => {
     const message = event.message;
     for (const record of message.records) {
@@ -24,6 +43,9 @@ const parseEventWithLogger = (logger) => (event) => {
             break;
         case "url":
             readUrlRecord(record, logger);
+            break;
+        case "mime":
+            readMimeRecord(record, logger);
             break;
         default:
             logger.log("Data " + JSON.stringify(record));
