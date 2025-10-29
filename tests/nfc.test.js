@@ -2,7 +2,7 @@
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import {createWpsPayloadBytes} from "../src/js/nfc_payload.js";
+import {bufferToBytes, createWpsPayload2, createWpsPayloadBytes} from "../src/js/nfc_payload.js";
 
 /* eslint-disable */
 //parsing according to
@@ -140,6 +140,18 @@ test("nfc simple", () => {
     const ssidHolel = "MAY BEACH HOTEL T3";
     const pass = "12345678";
     const payload = createWpsPayloadBytes(ssidHolel, pass);
+    const nfcWifiParser = loadModule();
+    const result = nfcWifiParser(payload);
+    console.log(result);
+    assert.equal(ssidHolel, result.ssid);
+    assert.equal(pass, result.preSharedKey);
+});
+
+test("nfc simple 2", () => {
+    const ssidHolel = "MAY BEACH HOTEL T3";
+    const pass = "12345678";
+    const payloadBuffer = createWpsPayload2(ssidHolel, pass);
+    const payload = bufferToBytes(payloadBuffer);
     const nfcWifiParser = loadModule();
     const result = nfcWifiParser(payload);
     console.log(result);

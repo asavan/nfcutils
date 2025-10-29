@@ -74,3 +74,75 @@ export function createWpsPayloadBytes(ssid, networkKey) {
 export function createWpsPayload(ssid, networkKey) {
     return new Uint8Array(createWpsPayloadBytes(ssid, networkKey)).buffer;
 }
+
+// https://github.com/revtel/react-native-nfc-manager/issues/188
+/**
+ * Generates a binary Wi-Fi Protected Setup (WPS) payload from network credentials,
+ * mimicking the logic of the provided Java `generateNdefPayload` function.
+ * @param {string} ssid The name of the Wi-Fi network.
+ * @param {string} networkKey The password for the Wi-Fi network.
+ * @returns {ArrayBuffer} The binary WPS payload as an ArrayBuffer.
+ */
+export function createWpsPayload2(ssid, networkKey) {
+    const encoder = new TextEncoder();
+
+    // Field IDs and values based on the Java code
+    const CREDENTIAL_FIELD_ID = 0x100E;
+    const SSID_FIELD_ID = 0x1045;
+    const AUTH_TYPE_FIELD_ID = 0x1003;
+    const AUTH_TYPE_WPA2_PSK = 0x0020;
+    const NETWORK_KEY_FIELD_ID = 0x1027;
+
+    // Convert strings to byte arrays
+    const ssidBytes = encoder.encode(ssid);
+    const networkKeyBytes = encoder.encode(networkKey);
+
+    const ssidSize = ssidBytes.length;
+    const networkKeySize = networkKeyBytes.length;
+
+    // Calculate the total buffer size
+    const bufferSize = 18 + ssidSize + networkKeySize;
+
+    // Create the ArrayBuffer and a DataView to write data
+    const buffer = new ArrayBuffer(bufferSize);
+    const view = new DataView(buffer);
+    const fullView = new Uint8Array(buffer);
+
+    let offset = 0; // Track the current position in the buffer
+
+    // Write the Credential attribute
+    view.setUint16(offset, CREDENTIAL_FIELD_ID, false); // Big endian
+    offset += 2;
+    view.setUint16(offset, bufferSize - 4, false); // Big endian
+    offset += 2;
+
+    // Write the SSID attribute
+    view.setUint16(offset, SSID_FIELD_ID, false); // Big endian
+    offset += 2;
+    view.setUint16(offset, ssidSize, false); // Big endian
+    offset += 2;
+    fullView.set(ssidBytes, offset); // Use the full view to set the bytes
+    offset += ssidSize;
+
+    // Write the Authentication Type attribute
+    view.setUint16(offset, AUTH_TYPE_FIELD_ID, false); // Big endian
+    offset += 2;
+    view.setUint16(offset, 2, false); // Big endian
+    offset += 2;
+    view.setUint16(offset, AUTH_TYPE_WPA2_PSK, false); // Big endian
+    offset += 2;
+
+    // Write the Network Key attribute
+    view.setUint16(offset, NETWORK_KEY_FIELD_ID, false); // Big endian
+    offset += 2;
+    view.setUint16(offset, networkKeySize, false); // Big endian
+    offset += 2;
+    fullView.set(networkKeyBytes, offset); // Use the full view to set the bytes
+
+    return buffer;
+}
+
+export function bufferToBytes(arrayBuffer) {
+    const uint8Array = new Uint8Array(arrayBuffer);
+    return Array.from(uint8Array);
+}
