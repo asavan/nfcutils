@@ -1,0 +1,25 @@
+// https://developer.chrome.com/docs/capabilities/nfc?hl=ru
+
+// https://gist.github.com/henrycjc/5e161e0c1327313b20b4773526f02a06
+// https://docs.sparkfun.com/SparkFun_ST25DV64KC_Arduino_Library/sparkfun-st25dv64kc-arduino-library-examples/ex_09_NDEF_WiFi/#creating-an-ndef-wifi-record
+// https://docs.sparkfun.com/SparkFun_ST25DV64KC_Arduino_Library/sparkfun-st25dv64kc-arduino-library-examples/ex_08_NDEF_URI
+// vcard http://gist.github.com/henrycjc/5e161e0c1327313b20b4773526f02a06
+//
+// https://android.googlesource.com/platform/packages/apps/Nfc/+/ae1f6029fe18c5f362e1e0050ef41e13e23a28d6/src/com/android/nfc/NfcWifiProtectedSetup.java
+// https://android.googlesource.com/platform/packages/apps/Nfc/+/4ab3e497c6cc4ca884555735003c691a8588ad92/src/com/android/nfc/NfcWifiProtectedSetup.java
+// https://android.googlesource.com/platform/packages/apps/Nfc/+/android-5.0.2_r1/src/com/android/nfc/NfcWifiProtectedSetup.java
+
+
+// good https://github.com/bparmentier/WiFiKeyShare/blob/master/app/src/main/java/be/brunoparmentier/wifikeyshare/utils/NfcUtils.java
+// tests from here https://android.googlesource.com/platform/packages/apps/Nfc/+/android-5.0.2_r1/src/com/android/nfc/NfcWifiProtectedSetup.java
+// js tests https://github.com/gfnork/js-nfc-wifi-parser/blob/master/src/nfc-wifi-parser.js
+
+// ts https://cdn.jsdelivr.net/npm/react-native-nfc-manager@2.2.1/index.d.ts
+
+// maybe good https://gist.github.com/henrycjc/17f3de5118c5c9d8a7a4e6840d601109
+// helper https://gist.github.com/henrycjc/5e161e0c1327313b20b4773526f02a06
+
+// useful https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/fromHex
+
+// looks useful https://github.com/revtel/react-native-nfc-manager/issues/188
+

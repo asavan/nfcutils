@@ -1,4 +1,4 @@
-// https://developer.chrome.com/docs/capabilities/nfc?hl=ru
+import {createWpsPayload} from "./nfc_payload.js";
 
 function readUrlRecord(record, logger) {
     console.assert(record.recordType === "url");
@@ -34,17 +34,17 @@ const parseEventWithLogger = (logger) => (event) => {
 export function writeUrlWithTimeout(logger) {
     /* eslint-disable no-undef */
     const ndef = new NDEFReader();
+    const parser = parseEventWithLogger(logger);
     let ignoreRead = false;
     let counter = 0;
     /* eslint-enable no-undef */
     ndef.onreading = (event) => {
         if (ignoreRead) {
+            logger.log("Ignore");
             return; // write pending, ignore read.
         }
         ++counter;
         logger.log("We read a tag! " + counter);
-        const parser = parseEventWithLogger(logger);
-        logger.log(event);
         parser(event);
     };
 
@@ -85,11 +85,30 @@ export function writeUrlWithTimeout(logger) {
         return written;
     };
 
+    const writeWifi = async (ssid, pass, timeout) => {
+        const signal = AbortSignal.timeout(timeout);
+        await ndef.scan({signal});
+        logger.log("touch tag with phone to write");
+        const payload = createWpsPayload(ssid, pass);
+        const data = {
+            records: [{
+                recordType: "mime",
+                mediaType: "application/vnd.wfa.wsc",
+                data: payload
+            }]
+        };
+        // Let's wait for 5 seconds only.
+        const written = await write(data, signal);
+        logger.log("We wrote to a tag! " + written);
+        return written;
+    };
+
     const read = (timeout) => readNfc(ndef, logger, timeout);
 
     return {
         read,
         write,
+        writeWifi,
         writeUrl
     };
 }
