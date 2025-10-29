@@ -37,6 +37,7 @@ export function createWpsPayloadBytes(ssid, networkKey) {
     const TAG_WPS_ENCR_TYPE = [0x10, 0x0F];
     const TAG_WPS_NETWORK_KEY = [0x10, 0x27];
     const TAG_WPS_MAC_ADDR = [0x10, 0x20];
+    // const VENDOR_EXTENSION = [0x10, 0x49]; // 0x1049 (Vendor Extension)
 
     // Map authentication and encryption types to their byte values
     const authenticationTypes = {

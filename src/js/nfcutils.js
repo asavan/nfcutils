@@ -101,11 +101,17 @@ export function writeUrlWithTimeout(logger) {
         logger.log("touch tag with phone to write");
         const payload = createWpsPayload(ssid, pass);
         const data = {
-            records: [{
-                recordType: "mime",
-                mediaType: "application/vnd.wfa.wsc",
-                data: payload
-            }]
+            records: [
+                {
+                    recordType: "mime",
+                    mediaType: "application/vnd.wfa.wsc",
+                    data: payload
+                },
+                {
+                    recordType: "url",
+                    data: "https://asavan.github.io"
+                }
+            ]
         };
         // Let's wait for 5 seconds only.
         const written = await write(data, signal);
