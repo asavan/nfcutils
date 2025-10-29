@@ -90,9 +90,8 @@ export function writeUrlWithTimeout(logger) {
             records: [{recordType: "url", data: url}],
         };
         // Let's wait for 5 seconds only.
-        const written = await write(data, signal);
-        logger.log("We wrote to a tag! " + written);
-        return written;
+        await write(data, signal);
+        logger.log("We wrote url to a tag!");
     };
 
     const writeWifi = async (ssid, pass, timeout) => {
@@ -103,20 +102,19 @@ export function writeUrlWithTimeout(logger) {
         const data = {
             records: [
                 {
+                    recordType: "url",
+                    data: "https://asavan.github.io"
+                },
+                {
                     recordType: "mime",
                     mediaType: "application/vnd.wfa.wsc",
                     data: payload
-                },
-                {
-                    recordType: "url",
-                    data: "https://asavan.github.io"
                 }
             ]
         };
         // Let's wait for 5 seconds only.
-        const written = await write(data, signal);
-        logger.log("We wrote to a tag! " + written);
-        return written;
+        await write(data, signal);
+        logger.log("We wrote url+wifi to a tag!");
     };
 
     const read = (timeout) => readNfc(ndef, logger, timeout);

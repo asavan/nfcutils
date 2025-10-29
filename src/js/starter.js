@@ -40,8 +40,7 @@ export default function starter(window, document) {
             const url = input.value;
             mainLogger.log("value " + url);
             try {
-                const res = await writer.writeUrl(url, 5000);
-                mainLogger.log("result " + res);
+                await writer.writeUrl(url, 5000);
             } catch (e) {
                 mainLogger.error(e);
             }
@@ -52,8 +51,7 @@ export default function starter(window, document) {
             const url = input.value;
             mainLogger.log("value " + url);
             try {
-                const res = await writer.writeWifi(ssidHolel, pass, 5000);
-                mainLogger.log("result " + res);
+                await writer.writeWifi(ssidHolel, pass, 10000);
             } catch (e) {
                 mainLogger.error(e);
             }
