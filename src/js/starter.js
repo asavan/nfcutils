@@ -6,7 +6,7 @@ import {writeUrlWithTimeout} from "./nfcutils.js";
 export default function starter(window, document) {
     const changed = parseSettings(window.location.search, settings);
     const mainLogger = loggerFunc(document, settings);
-    if (changed) {
+    if (Array.isArray(changed) && changed.length !== 0) {
         mainLogger.log("Extra options " + JSON.stringify(changed));
     }
 
