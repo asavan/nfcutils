@@ -98,7 +98,8 @@ export function readDataView(dataView, level, logger) {
     } else {
         if (isTextField(type)) {
             const str = textDecoder.decode(rest);
-            logger.log(idToName.get(type), str);
+            console.log(idToName.get(type), str);
+            logger.log(str);
         } else if (size === 2) {
             const intVal = rest.getUint16(0);
             const val = idToName.get(intVal);

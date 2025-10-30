@@ -1,6 +1,6 @@
-import {createWpsPayload} from "./nfc_payload.js";
+import {bufferToBytes, createWpsPayload} from "./nfc_payload.js";
 import {dataViewToHexString} from "./common.js";
-import {readDataView} from "./tlv_reader.js";
+import ndefWifiSimple from "./lib/ndef-wifi-simple.js";
 
 function readUrlRecord(record, logger) {
     console.assert(record.recordType === "url");
@@ -16,10 +16,13 @@ function readTextRecord(record, logger) {
 
 function readMimeRecord(record, logger) {
     console.assert(record.recordType === "mime");
-    logger.log("Data len " + record.data.byteLength);
     if (record.mediaType === "application/vnd.wfa.wsc") {
-        readDataView(record.data, 0, logger);
+        const payload = bufferToBytes(record.data.buffer);
+        const decoded = ndefWifiSimple.decodePayload(payload);
+        logger.log("ssid " + decoded.ssid);
+        logger.log("pass " + decoded.networkKey);
     } else {
+        logger.log("Data len " + record.data.byteLength);
         logger.log("Data: " + dataViewToHexString(record.data));
     }
 }
@@ -28,9 +31,6 @@ const parseEventWithLogger = (logger) => (event) => {
     const message = event.message;
     logger.log("Read tag: " + event.serialNumber);
     for (const record of message.records) {
-        logger.log("Record type:  " + record.recordType);
-        logger.log("MIME type:    " + record.mediaType);
-        logger.log("Record id:    " + record.id);
         switch (record.recordType) {
         case "text":
             readTextRecord(record, logger);
