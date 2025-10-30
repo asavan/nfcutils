@@ -14,7 +14,7 @@ test("read tlv MAY BEACH", () => {
 
     const str = dataViewToHexString(dataView);
     assert.equal(data, str);
-    readDataView(dataView);
+    readDataView(dataView, 0, console);
     assert.equal(1, 1);
 });
 
@@ -27,6 +27,6 @@ test("read tlv serb", () => {
 
     const str = dataViewToHexString(dataView);
     assert.equal(data, str);
-    readDataView(dataView);
+    readDataView(dataView, 0, console);
     assert.equal(1, 1);
 });
