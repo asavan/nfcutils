@@ -5,7 +5,8 @@ import {writeUrlWithTimeout} from "./nfcutils.js";
 
 export default function starter(window, document) {
     const changed = parseSettings(window.location.search, settings);
-    const mainLogger = loggerFunc(document, settings);
+    const logElem = document.querySelector(settings.logger);
+    const mainLogger = loggerFunc(document, settings, settings.logLevel, logElem);
     if (Array.isArray(changed) && changed.length !== 0) {
         mainLogger.log("Extra options " + JSON.stringify(changed));
     }
@@ -13,7 +14,6 @@ export default function starter(window, document) {
     const writeBtn = document.querySelector(".js-write-nfc");
     const readBtn = document.querySelector(".js-read-nfc");
     const cleanBtn = document.querySelector(".js-clean");
-    const logElem = document.querySelector(".log");
     const input = document.querySelector("#dataInput");
     const inputSsid = document.querySelector("#ssidInput");
     const passwordInput = document.querySelector("#passwordInput");
@@ -32,10 +32,10 @@ export default function starter(window, document) {
             }
         });
 
-        readBtn.addEventListener("click", (e) => {
+        readBtn.addEventListener("click", async (e) => {
             e.preventDefault();
             try {
-                writer.read(5000);
+                await writer.read(5000);
             } catch (e) {
                 mainLogger.error(e);
             }
