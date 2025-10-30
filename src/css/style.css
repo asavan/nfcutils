@@ -392,6 +392,8 @@ dialog::backdrop {
     padding: 2.5rem;
     border-radius: 10px;
     display:grid;
+    align-items: center;
+    justify-content: center;
     gap: 20px;
     grid-template-columns: max-content 1fr;
     box-shadow: 0 10px 25px rgb(0 0 0 / 10%);
