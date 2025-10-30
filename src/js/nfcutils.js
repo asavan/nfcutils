@@ -1,5 +1,6 @@
 import {createWpsPayload} from "./nfc_payload.js";
 import {dataViewToHexString} from "./common.js";
+import {readDataView} from "./tlv_reader.js";
 
 function readUrlRecord(record, logger) {
     console.assert(record.recordType === "url");
@@ -16,11 +17,16 @@ function readTextRecord(record, logger) {
 function readMimeRecord(record, logger) {
     console.assert(record.recordType === "mime");
     logger.log("Data len " + record.data.byteLength);
-    logger.log("Data: " + dataViewToHexString(record.data));
+    if (record.mediaType === "application/vnd.wfa.wsc") {
+        readDataView(record.data, 0, logger);
+    } else {
+        logger.log("Data: " + dataViewToHexString(record.data));
+    }
 }
 
 const parseEventWithLogger = (logger) => (event) => {
     const message = event.message;
+    logger.log("Read tag: " + event.serialNumber);
     for (const record of message.records) {
         logger.log("Record type:  " + record.recordType);
         logger.log("MIME type:    " + record.mediaType);
@@ -36,7 +42,7 @@ const parseEventWithLogger = (logger) => (event) => {
             readMimeRecord(record, logger);
             break;
         default:
-            logger.log("Data " + JSON.stringify(record));
+            logger.log("Unknown type " + record.recordType);
         }
     }
 };
@@ -44,17 +50,14 @@ const parseEventWithLogger = (logger) => (event) => {
 export function writeUrlWithTimeout(logger) {
     /* eslint-disable no-undef */
     const ndef = new NDEFReader();
+    /* eslint-enable no-undef */
     const parser = parseEventWithLogger(logger);
     let ignoreRead = false;
-    let counter = 0;
-    /* eslint-enable no-undef */
     ndef.onreading = (event) => {
         if (ignoreRead) {
             logger.log("Ignore");
             return; // write pending, ignore read.
         }
-        ++counter;
-        logger.log("We read a tag! " + counter);
         parser(event);
     };
 
@@ -94,27 +97,38 @@ export function writeUrlWithTimeout(logger) {
         logger.log("We wrote url to a tag!");
     };
 
-    const writeWifi = async (ssid, pass, timeout) => {
+    const writeWifi = async (ssid, pass, url, timeout) => {
         const signal = AbortSignal.timeout(timeout);
         await ndef.scan({signal});
         logger.log("touch tag with phone to write");
-        const payload = createWpsPayload(ssid, pass);
         const data = {
             records: [
-                {
-                    recordType: "url",
-                    data: "https://asavan.github.io"
-                },
-                {
-                    recordType: "mime",
-                    mediaType: "application/vnd.wfa.wsc",
-                    data: payload
-                }
+                // {
+                //     recordType: "url",
+                //     data: "https://asavan.github.io"
+                // },
+                // {
+                //     recordType: "mime",
+                //     mediaType: "application/vnd.wfa.wsc",
+                //     data: payload
+                // }
             ]
         };
-        // Let's wait for 5 seconds only.
+        if (url) {
+            data.records.push({recordType: "url", data: url});
+        }
+        if (ssid || pass) {
+            const payload = createWpsPayload(ssid, pass);
+            const recordWifi = {
+                recordType: "mime",
+                mediaType: "application/vnd.wfa.wsc",
+                data: payload
+            };
+            data.records.push(recordWifi);
+        }
+        // Let's wait for write or timeout.
         await write(data, signal);
-        logger.log("We wrote url+wifi to a tag!");
+        logger.log("We wrote data to a tag!");
     };
 
     const read = (timeout) => readNfc(ndef, logger, timeout);

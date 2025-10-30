@@ -9,11 +9,12 @@ export default function starter(window, document) {
     mainLogger.log("Extra options " + JSON.stringify(changed));
 
     const writeBtn = document.querySelector(".js-write-nfc");
-    const writeWiFiBtn = document.querySelector(".js-write-wifi-nfc");
     const readBtn = document.querySelector(".js-read-nfc");
     const cleanBtn = document.querySelector(".js-clean");
     const logElem = document.querySelector(".log");
     const input = document.querySelector("#dataInput");
+    const inputSsid = document.querySelector("#ssidInput");
+    const passwordInput = document.querySelector("#passwordInput");
     const hotel = "SSID:\tMAY BEACH HOTEL T3\n" +
         "Protocol:\tWi-Fi 5 (802.11ac)\n" +
         "Security type:\tWPA2-Personal\n" +
@@ -29,29 +30,17 @@ export default function starter(window, document) {
         "Physical address (MAC):\tCC:D9:AC:B1:62:19\n";
     const ssidHolel = "MAY BEACH HOTEL T3";
     const pass = "12345678";
-    console.log(hotel);
+    console.log(hotel, ssidHolel, pass);
     try {
         cleanBtn.addEventListener("click", () => {
             logElem.innerHTML = "";
         });
         const writer = writeUrlWithTimeout(mainLogger);
+
         writeBtn.addEventListener("click", async (e) => {
             e.preventDefault();
-            const url = input.value;
-            mainLogger.log("value " + url);
             try {
-                await writer.writeUrl(url, 5000);
-            } catch (e) {
-                mainLogger.error(e);
-            }
-        });
-
-        writeWiFiBtn.addEventListener("click", async (e) => {
-            e.preventDefault();
-            const url = input.value;
-            mainLogger.log("value " + url);
-            try {
-                await writer.writeWifi(ssidHolel, pass, 10000);
+                await writer.writeWifi(inputSsid.value, passwordInput.value, input.value, 10000);
             } catch (e) {
                 mainLogger.error(e);
             }

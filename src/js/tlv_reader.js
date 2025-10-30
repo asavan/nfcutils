@@ -64,7 +64,7 @@ function isRecurrType(type) {
     return recurrTypes.has(type);
 }
 
-export function readDataView(dataView, level = 0) {
+export function readDataView(dataView, level, logger) {
     if (dataView.byteLength <= 4) {
         console.error("bad view");
         return;
@@ -93,12 +93,12 @@ export function readDataView(dataView, level = 0) {
         console.log(idToName.get(type));
         // console.log(dataViewToHexString(rest));
         console.group();
-        readDataView(rest, level + 1);
+        readDataView(rest, level + 1, logger);
         console.groupEnd();
     } else {
         if (isTextField(type)) {
             const str = textDecoder.decode(rest);
-            console.log(idToName.get(type), str);
+            logger.log(idToName.get(type), str);
         } else if (size === 2) {
             const intVal = rest.getUint16(0);
             const val = idToName.get(intVal);
@@ -115,7 +115,7 @@ export function readDataView(dataView, level = 0) {
     if (dataView.byteLength > offset) {
         // console.log("rest some data");
         const rest = new DataView(dataView.buffer, dataView.byteOffset + offset, dataView.byteLength - offset);
-        readDataView(rest);
+        readDataView(rest, level, logger);
     } else if (dataView.byteLength < offset) {
         console.error("BAD data");
     } else {

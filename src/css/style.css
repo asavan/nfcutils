@@ -391,6 +391,9 @@ dialog::backdrop {
     background-color: #fff;
     padding: 2.5rem;
     border-radius: 10px;
+    display:grid;
+    gap: 20px;
+    grid-template-columns: max-content 1fr;
     box-shadow: 0 10px 25px rgb(0 0 0 / 10%);
     width: 100%;
     max-width: 500px;
@@ -399,6 +402,7 @@ dialog::backdrop {
 /* Label styling */
 label {
     display: block;
+    text-align:right;
     margin-bottom: 0.5rem;
     font-weight: 600;
     color: #4a5568;
@@ -425,6 +429,7 @@ input[type="text"]:focus {
 
 /* Button container for flexible layout */
 .button-group {
+    grid-column: 1 / -1;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
