@@ -14,6 +14,7 @@ export default function starter(window, document) {
     const writeBtn = document.querySelector(".js-write-nfc");
     const readBtn = document.querySelector(".js-read-nfc");
     const cleanBtn = document.querySelector(".js-clean");
+    const serialEl = document.querySelector("#serial");
     const input = document.querySelector("#dataInput");
     const inputSsid = document.querySelector("#ssidInput");
     const passwordInput = document.querySelector("#passwordInput");
@@ -35,21 +36,23 @@ export default function starter(window, document) {
         readBtn.addEventListener("click", async (e) => {
             e.preventDefault();
             try {
-                const dataObj = await writer.read(5000);
+                input.value = "";
+                inputSsid.value = "";
+                passwordInput.value = "";
+                serialEl.textContent = "";
+
+                const dataObj = await writer.read(5000, document);
+                if (dataObj.serialNumber) {
+                    serialEl.textContent = dataObj.serialNumber;
+                }
                 if (dataObj.url) {
                     input.value = dataObj.url;
-                } else {
-                    input.value = "";
                 }
                 if (dataObj.ssid) {
                     inputSsid.value = dataObj.ssid;
-                } else {
-                    inputSsid.value = "";
                 }
                 if (dataObj.networkKey) {
                     passwordInput.value = dataObj.networkKey;
-                } else {
-                    passwordInput.value = "";
                 }
             } catch (e) {
                 mainLogger.error(e);

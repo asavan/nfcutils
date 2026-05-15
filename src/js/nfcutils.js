@@ -156,8 +156,8 @@ export function writeUrlWithTimeout(logger) {
         logger.log("We wrote data to a tag!");
     };
 
-    const read = async (timeout) => {
-        await readNfc(ndef, logger, timeout);
+    const read = async (timeout, document) => {
+        await readNfc(ndef, logger, timeout, document);
         promiseWithResolver = Promise.withResolvers();
         return promiseWithResolver.promise;
     };
@@ -170,10 +170,20 @@ export function writeUrlWithTimeout(logger) {
     };
 }
 
-async function readNfc(ndef, logger, ms) {
+async function readNfc(ndef, logger, ms, document) {
     const signal = AbortSignal.timeout(ms);
     try {
+        const scanShower = document.querySelector(".js-show-scan");
+        signal.addEventListener("abort", () => {
+            console.log("Operation timed out! Reason:", signal.reason);
+            if (scanShower) {
+                scanShower.classList.remove("neon-button");
+            }
+        });
         await ndef.scan({signal});
+        if (scanShower) {
+            scanShower.classList.add("neon-button");
+        }
         logger.log("touch tag with phone to read");
     } catch (error) {
         logger.log(`Error! Scan failed to start: ${error}.`);

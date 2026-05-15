@@ -468,6 +468,21 @@ input[type="text"]:focus {
     background-color: #cbd5e1;
 }
 
+.neon-button {
+    background: transparent;
+    color: #03e9f4;
+    border: 2px solid #03e9f4;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+
+    /* Multi-layered glow */
+    box-shadow: 0 0 10px #03e9f4,
+    0 0 40px #03e9f4,
+    inset 0 0 10px #03e9f4;
+    text-shadow: 0 0 5px #03e9f4;
+}
+
 /* Add a small press down effect on click */
 .form-button:active {
     transform: scale(0.98);
