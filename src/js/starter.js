@@ -35,7 +35,22 @@ export default function starter(window, document) {
         readBtn.addEventListener("click", async (e) => {
             e.preventDefault();
             try {
-                await writer.read(5000);
+                const dataObj = await writer.read(5000);
+                if (dataObj.url) {
+                    input.textContent = dataObj.url;
+                } else {
+                    input.textContent = "";
+                }
+                if (dataObj.ssid) {
+                    inputSsid.textContent = dataObj.ssid;
+                } else {
+                    inputSsid.textContent = "";
+                }
+                if (dataObj.networkKey) {
+                    passwordInput.textContent = dataObj.networkKey;
+                } else {
+                    passwordInput.textContent = "";
+                }
             } catch (e) {
                 mainLogger.error(e);
             }

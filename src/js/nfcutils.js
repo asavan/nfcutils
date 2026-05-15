@@ -5,13 +5,17 @@ import ndefWifiSimple from "./lib/ndef-wifi-simple.js";
 function readUrlRecord(record, logger) {
     console.assert(record.recordType === "url");
     const textDecoder = new TextDecoder();
-    logger.log(`URL: ${textDecoder.decode(record.data)}`);
+    const str = textDecoder.decode(record.data);
+    logger.log(`URL: ${str}`);
+    return str;
 }
 
 function readTextRecord(record, logger) {
     console.assert(record.recordType === "text");
     const textDecoder = new TextDecoder(record.encoding);
-    logger.log(`Text: ${textDecoder.decode(record.data)} (${record.lang})`);
+    const str = textDecoder.decode(record.data);
+    logger.log(`Text: ${str} (${record.lang})`);
+    return str;
 }
 
 function readMimeRecord(record, logger) {
@@ -21,30 +25,49 @@ function readMimeRecord(record, logger) {
         const decoded = ndefWifiSimple.decodePayload(payload);
         logger.log("ssid " + decoded.ssid);
         logger.log("pass " + decoded.networkKey);
+        return decoded;
     } else {
+        const str = dataViewToHexString(record.data);
         logger.log("Data len " + record.data.byteLength);
         logger.log("Data: " + dataViewToHexString(record.data));
+        return str;
     }
 }
 
 const parseEventWithLogger = (logger) => (event) => {
     const message = event.message;
     logger.log("Read tag: " + event.serialNumber);
+    const dataObj = {};
+    dataObj.serialNumber = event.serialNumber;
     for (const record of message.records) {
         switch (record.recordType) {
-        case "text":
-            readTextRecord(record, logger);
+        case "text": {
+            const text = readTextRecord(record, logger);
+            dataObj.text = text;
+        }
             break;
-        case "url":
-            readUrlRecord(record, logger);
+        case "url": {
+            const url = readUrlRecord(record, logger);
+            dataObj.url = url;
+        }
             break;
-        case "mime":
-            readMimeRecord(record, logger);
+        case "mime": {
+            const mime = readMimeRecord(record, logger);
+            if (mime.ssid) {
+                dataObj.ssid = mime.ssid;
+                if (mime.networkKey) {
+                    dataObj.networkKey = mime.networkKey;
+                }
+            } else {
+                dataObj.data = mime;
+            }
+        }
             break;
         default:
             logger.log("Unknown type " + record.recordType);
         }
     }
+    return dataObj;
 };
 
 export function writeUrlWithTimeout(logger) {
@@ -53,12 +76,14 @@ export function writeUrlWithTimeout(logger) {
     /* eslint-enable no-undef */
     const parser = parseEventWithLogger(logger);
     let ignoreRead = false;
+    let promiseWithResolver = Promise.withResolvers();
     ndef.onreading = (event) => {
         if (ignoreRead) {
             logger.log("Ignore");
             return; // write pending, ignore read.
         }
-        parser(event);
+        const dataObj = parser(event);
+        promiseWithResolver.resolve(dataObj);
     };
 
     ndef.onreadingerror = (event) => {
@@ -131,7 +156,11 @@ export function writeUrlWithTimeout(logger) {
         logger.log("We wrote data to a tag!");
     };
 
-    const read = (timeout) => readNfc(ndef, logger, timeout);
+    const read = async (timeout) => {
+        await readNfc(ndef, logger, timeout);
+        promiseWithResolver = Promise.withResolvers();
+        return promiseWithResolver.promise;
+    };
 
     return {
         read,
