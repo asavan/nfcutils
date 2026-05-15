@@ -37,19 +37,19 @@ export default function starter(window, document) {
             try {
                 const dataObj = await writer.read(5000);
                 if (dataObj.url) {
-                    input.textContent = dataObj.url;
+                    input.value = dataObj.url;
                 } else {
-                    input.textContent = "";
+                    input.value = "";
                 }
                 if (dataObj.ssid) {
-                    inputSsid.textContent = dataObj.ssid;
+                    inputSsid.value = dataObj.ssid;
                 } else {
-                    inputSsid.textContent = "";
+                    inputSsid.value = "";
                 }
                 if (dataObj.networkKey) {
-                    passwordInput.textContent = dataObj.networkKey;
+                    passwordInput.value = dataObj.networkKey;
                 } else {
-                    passwordInput.textContent = "";
+                    passwordInput.value = "";
                 }
             } catch (e) {
                 mainLogger.error(e);
