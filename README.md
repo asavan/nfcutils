@@ -45,3 +45,6 @@ SmartPoster
 https://developer.chrome.com/docs/capabilities/nfc#read_and_write_a_smart_poster_record
 
 
+### Credit Card
+https://github.com/jackbayliss/Credit-Card-NFC-Reader
+https://medium.com/@androidcrypto/talk-to-your-credit-card-android-nfc-java-d782ff19fc4a

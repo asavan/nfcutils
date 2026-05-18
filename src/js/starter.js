@@ -42,7 +42,7 @@ export default function starter(window, document) {
         writeSmartBtn.addEventListener("click", async (e) => {
             e.preventDefault();
             try {
-                await writer.writeImage("./images/small/dratini.png", 30000);
+                await writer.writeSmartPoster("./images/small/dratini.png", 20000);
             } catch (e) {
                 mainLogger.error(e);
             }
