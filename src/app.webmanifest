@@ -1,11 +1,11 @@
 {
-    "name": "sos game",
-	"short_name": "sosgame",
+    "name": "nfc utils",
+	"short_name": "nfc utils",
     "icons": [
         {
-          "src": "./images/sos.png",
-          "sizes": "512x512",
-          "type": "image/png",
+          "src": "./images/nfc1.svg",
+          "sizes": "any",
+          "type": " image/svg+xml",
           "purpose": "any"
         }
     ],
