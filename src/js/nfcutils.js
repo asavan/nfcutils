@@ -110,6 +110,19 @@ export function writeUrlWithTimeout(logger) {
         });
     }
 
+    const writeImage = async (iconUrl, timeout) => {
+        const imageRecord = {
+            recordType: "mime",
+            mediaType: "image/png",
+            data: await (await fetch(iconUrl)).arrayBuffer()
+        };
+        const signal = AbortSignal.timeout(timeout);
+        const data = {
+            records: [imageRecord],
+        };
+        await write(data, signal);
+    };
+
     const writeUrl = async (url, timeout) => {
         const signal = AbortSignal.timeout(timeout);
         await ndef.scan({signal});
@@ -166,7 +179,8 @@ export function writeUrlWithTimeout(logger) {
         read,
         write,
         writeWifi,
-        writeUrl
+        writeUrl,
+        writeImage
     };
 }
 

@@ -12,6 +12,7 @@ export default function starter(window, document) {
     }
 
     const writeBtn = document.querySelector(".js-write-nfc");
+    const writeImgBtn = document.querySelector(".js-write-nfc-img");
     const readBtn = document.querySelector(".js-read-nfc");
     const cleanBtn = document.querySelector(".js-clean");
     const serialEl = document.querySelector("#serial");
@@ -24,6 +25,14 @@ export default function starter(window, document) {
         });
         const writer = writeUrlWithTimeout(mainLogger);
 
+        writeImgBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+                await writer.writeImage("./images/small/abra.png", 30000);
+            } catch (e) {
+                mainLogger.error(e);
+            }
+        });
         writeBtn.addEventListener("click", async (e) => {
             e.preventDefault();
             try {

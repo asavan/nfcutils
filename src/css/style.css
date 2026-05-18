@@ -483,6 +483,10 @@ input[type="text"]:focus {
     text-shadow: 0 0 5px #03e9f4;
 }
 
+h1 {
+    text-align: center;
+}
+
 /* Add a small press down effect on click */
 .form-button:active {
     transform: scale(0.98);
