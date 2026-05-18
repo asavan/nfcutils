@@ -11,8 +11,14 @@ export default function starter(window, document) {
         mainLogger.log("Extra options " + JSON.stringify(changed));
     }
 
+    window.addEventListener("unhandledrejection", (event) => {
+        mainLogger.log(`UNHANDLED PROMISE REJECTION: ${event.reason}`);
+        // event.preventDefault();
+    });
+
     const writeBtn = document.querySelector(".js-write-nfc");
     const writeImgBtn = document.querySelector(".js-write-nfc-img");
+    const writeSmartBtn = document.querySelector(".js-write-smart");
     const readBtn = document.querySelector(".js-read-nfc");
     const cleanBtn = document.querySelector(".js-clean");
     const serialEl = document.querySelector("#serial");
@@ -29,6 +35,14 @@ export default function starter(window, document) {
             e.preventDefault();
             try {
                 await writer.writeImage("./images/small/abra.png", 30000);
+            } catch (e) {
+                mainLogger.error(e);
+            }
+        });
+        writeSmartBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+                await writer.writeImage("./images/small/dratini.png", 30000);
             } catch (e) {
                 mainLogger.error(e);
             }

@@ -123,6 +123,48 @@ export function writeUrlWithTimeout(logger) {
         await write(data, signal);
     };
 
+    const writeSmartPoster = async (iconUrl, timeout) => {
+        const encoder = new TextEncoder();
+        const smartPosterRecord = {
+            recordType: "smart-poster",
+            data: {
+                records: [
+                    {
+                        recordType: "url", // URL record for smart poster content
+                        data: "https://asavan.github.io/nfcutils/"
+                    },
+                    {
+                        recordType: "text", // title record for smart poster content
+                        data: "Pic"
+                    },
+                    {
+                        recordType: ":t", // type record, a local type to smart poster
+                        data: encoder.encode("image/gif") // MIME type of smart poster content
+                    },
+                    {
+                        recordType: ":s", // size record, a local type to smart poster
+                        data: new Uint32Array([4096]) // byte size of smart poster content
+                    },
+                    {
+                        recordType: ":act", // action record, a local type to smart poster
+                        // do the action, in this case open in the browser
+                        data: new Uint8Array([0])
+                    },
+                    {
+                        recordType: "mime", // icon record, a MIME type record
+                        mediaType: "image/png",
+                        data: await (await fetch(iconUrl)).arrayBuffer()
+                    }
+                ]
+            }
+        };
+        const signal = AbortSignal.timeout(timeout);
+        const data = {
+            records: [smartPosterRecord],
+        };
+        await write(data, signal);
+    };
+
     const writeUrl = async (url, timeout) => {
         const signal = AbortSignal.timeout(timeout);
         await ndef.scan({signal});
@@ -180,7 +222,8 @@ export function writeUrlWithTimeout(logger) {
         write,
         writeWifi,
         writeUrl,
-        writeImage
+        writeImage,
+        writeSmartPoster
     };
 }
 

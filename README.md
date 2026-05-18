@@ -34,3 +34,14 @@ https://github.com/bparmentier/WiFiKeyShare/blob/master/app/src/main/java/be/bru
 
 // bad (fixed cred size) https://gist.github.com/henrycjc/17f3de5118c5c9d8a7a4e6840d601109   
 // helper https://gist.github.com/henrycjc/5e161e0c1327313b20b4773526f02a06
+
+
+##### Image Writing
+https://www.ragman.net/musings/nfc_experiments/
+https://www.ragman.net/webnfc/
+
+
+SmartPoster
+https://developer.chrome.com/docs/capabilities/nfc#read_and_write_a_smart_poster_record
+
+
