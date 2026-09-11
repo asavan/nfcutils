@@ -1,6 +1,6 @@
 {
   "name": "nfcutils",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "author": "Alex Sav",
   "description": "nfcutils",
   "private": true,
@@ -8,9 +8,7 @@
   "type": "module",
   "sideEffects": false,
   "scripts": {
-    "ws": "node devtools/ws-server.js",
     "start": "webpack serve --config webpack_configs/webpack.config.js --mode development",
-    "all": "npm install && npm-run-all -p -r ws start",
     "android": "webpack --config webpack_configs/android.webpack.config.js --mode production",
     "build": "webpack --config webpack_configs/production.webpack.config.js --mode production",
     "style": "npx eslint . -c linters/eslint.config.js",
@@ -30,9 +28,9 @@
   },
   "homepage": "https://asavan.github.io/nfcutils/",
   "devDependencies": {
-    "netdeps": "github:asavan/net-deps#v0.0.5"
+    "devdeps": "github:asavan/dev-deps#v0.3.1"
   },
   "dependencies": {
-    "netutils": "github:asavan/netutils#v0.1.6"
+    "netutils": "github:asavan/netutils#v0.2.2"
   }
 }
